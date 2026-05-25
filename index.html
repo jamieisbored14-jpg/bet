@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Anniversary Bebi ♡</title>
-    
     <!-- GOOGLE FONTS INCLUSION FOR DANCING SCRIPT & POPPINS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -157,6 +156,9 @@
         /* --- SPOTIFY EMBED INTEGRATION --- */
         .spotify-container { margin: 25px auto 10px auto; max-width: 400px; }
 
+        /* --- LOCK OVERLAY STYLE FOR POPOUTS --- */
+        .countdown-text { font-weight: bold; color: #e63946; font-size: 0.9rem; margin-top: 5px; }
+
         @media (max-width: 850px) { .photobooth { display: none; } }
     </style>
 </head>
@@ -299,6 +301,18 @@
                     <span class="month-label">MAY</span>
                 </div>
 
+                <!-- JUN '26 - NEW UNLOCKABLE GOLD NODE (UP) -->
+                <div class="month-node up gold-month" onclick="handleJune2026Unlock()">
+                    <div class="polaroid-popup" id="june-popup-container">
+                        <div id="june-popup-content">
+                            <p>🔒 Locked until June 5</p>
+                            <div class="countdown-text" id="june-countdown">--d --h --m --s</div>
+                        </div>
+                    </div>
+                    <div class="circle gold-ring"></div>
+                    <span class="month-label">JUN '26</span>
+                </div>
+
             </div>
         </div>
 
@@ -348,9 +362,25 @@
         </div>
     </div>
 
+    <!-- REVEAL OVERLAY PAGE: NEW JUNE 2026 UNLOCK LETTER -->
+    <div id="june2026-letter" class="letter-overlay">
+        <div class="letter-paper">
+            <button class="close-btn" onclick="closeLetter('june2026-letter')">✕</button>
+            <div class="letter-text">
+                <p>Happy 1 Year Anniversary, Bebi! 💖</p>
+                <p>I can't believe it's officially been a whole year since June 5, 11:59 pm. We've been through a lot, even navigating the distance, but being with you makes every single bit of it worth it.</p>
+                <p>Thank you for sticking by me, for every laugh, and for being my absolute favorite person. I'm so excited for everything next year has in store for us and getting closer to finally seeing each other again.</p>
+                <p>I love you infinitely.</p>
+                <div style="text-align: right; color: var(--accent-crimson); margin-top: 50px;">With all my heart, <br> J</div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // RELATIONSHIP TIME STAMP (June 5, 2025)
         const anniversaryTimeline = new Date("June 5, 2025 00:00:00").getTime();
+        // UNLOCK TIME STAMP (June 5, 2026)
+        const juneUnlockTime = new Date("June 5, 2026 00:00:00").getTime();
 
         function runClock() {
             const current = new Date().getTime();
@@ -363,9 +393,40 @@
 
             document.getElementById("live-counter").innerHTML = 
                 `${d} Days : ${h} Hours : ${m} Mins : ${s} Secs`;
+
+            // JUN '26 COUNTDOWN & DYNAMIC HOVER LOGIC
+            const lockDelta = juneUnlockTime - current;
+            const countdownEl = document.getElementById("june-countdown");
+            const containerEl = document.getElementById("june-popup-container");
+
+            if (lockDelta > 0) {
+                const ld = Math.floor(lockDelta / (1000 * 60 * 60 * 24));
+                const lh = Math.floor((lockDelta % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const lm = Math.floor((lockDelta % (1000 * 60 * 60)) / (1000 * 60));
+                const ls = Math.floor((lockDelta % (1000 * 60)) / 1000);
+                
+                if(countdownEl) {
+                    countdownEl.innerHTML = `${ld}d ${lh}h ${lm}m ${ls}s`;
+                }
+            } else {
+                // Time has crossed June 5, 2026! Automatically show original look
+                if (containerEl && !containerEl.querySelector('img')) {
+                    containerEl.innerHTML = `<img src="june2026.jfif"><p>Our 1 Year Anniversary!</p>`;
+                }
+            }
         }
         setInterval(runClock, 1000);
         runClock();
+
+        // CONDITIONAL INTERACTIVE CLICK FOR JUNE 2026 NODE
+        function handleJune2026Unlock() {
+            const current = new Date().getTime();
+            if (current >= juneUnlockTime) {
+                openLetter('june2026-letter');
+            } else {
+                alert("Bebi, this node is locked! It will automatically open exactly on our anniversary day! ♡");
+            }
+        }
 
         // INTERACTIVE SCREEN CONTROLS
         function openLetter(id) { document.getElementById(id).style.display = "block"; }
